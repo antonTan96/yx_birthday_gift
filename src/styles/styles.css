@@ -2,3 +2,9 @@
     background: linear-gradient(#F560E4, #FFFFFF) fixed;
 }
 
+@font-face {
+    font-family: "MadimiOne";
+    font-style: normal;
+    font-weight: normal;
+    src: local("MadimiOne"), url("./../fonts/MadimiOne-Regular.ttf") format("truetype");
+}

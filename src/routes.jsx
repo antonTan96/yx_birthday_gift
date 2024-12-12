@@ -1,17 +1,17 @@
 import { createBrowserRouter } from "react-router-dom";
-import App from "./App.jsx";
-import Incrementer from "./Incrementer.jsx";
-import GetFile from "./GetFile.jsx";
+import App from "./Menus/App.jsx";
+import Messages from "./Menus/Messages.jsx";
+import Journal from "./Menus/Journal.jsx";
 
 export const routes = createBrowserRouter([
   {
     path: "/",
     element: <App />,
   }, {
-    path: "/increment",
-    element: <Incrementer />
+    path: "/messages",
+    element: <Messages />
   }, {
-    path: "/file",
-    element: <GetFile />
+    path: "/journal",
+    element: <Journal />
   }
 ]);
