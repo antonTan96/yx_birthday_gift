@@ -11,8 +11,8 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
             greet,
-            commands::my_custom_command,
-            commands::read_file])
+            commands::read_file,
+            commands::get_env_var])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

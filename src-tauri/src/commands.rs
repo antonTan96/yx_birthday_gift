@@ -3,12 +3,6 @@ use std::path::PathBuf;
 use tauri::ipc::Response;
 
 #[tauri::command]
-pub fn my_custom_command() -> Result<String, ()> {
-  println!("I was invoked from JavaScript!");
-  Ok("teehee".to_string())
-}
-
-#[tauri::command]
 pub fn read_file() -> Response {
     let file_path = PathBuf::from("./data/ext_file.txt");
 
@@ -23,3 +17,8 @@ pub fn read_file() -> Response {
     Response::new(data)
 }
 
+#[tauri::command]
+pub fn get_env_var(key: String) -> String {
+    println!("Getting env var: {}", key);
+    key
+} 
