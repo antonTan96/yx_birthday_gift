@@ -33,7 +33,8 @@
     ],
     "resources": [
       "data/*.txt",
-      "data/speech/*"
+      "data/speech/*",
+      "data/extras/*"
     ]
   }
 }
