@@ -1,24 +1,29 @@
 use std::fs;
 use std::path::PathBuf;
 use tauri::ipc::Response;
+use tauri::Result;
 
 #[tauri::command]
-pub fn read_file() -> Response {
-    let file_path = PathBuf::from("./data/ext_file.txt");
-
-    // Get the full path for debugging purposes
-    let full_path = fs::canonicalize(&file_path).expect("Failed to get the full path");
-
-    println!("Full path to file: {}", full_path.display());
-
-    // Read the file
-    let data = fs::read(&file_path).expect("Failed to read the file");
-
-    Response::new(data)
+pub fn read_file(file_path: String) -> Result<String> {
+    let path = PathBuf::from(file_path);
+    println!("file path: {}", path.display());
+    match fs::read_to_string(path) {
+        Ok(content) => Ok(content),          // Return the file content on success
+        Err(err) => Err(err.into()),         // Convert the error to a Tauri-compatible error
+    }
 }
 
 #[tauri::command]
-pub fn get_env_var(key: String) -> String {
-    println!("Getting env var: {}", key);
-    key
-} 
+pub fn get_num_files(dir: String) -> Result<usize> {
+    let path = PathBuf::from(dir);
+    println!("dir path: {}", path.display());
+
+    let entries = fs::read_dir(path).map_err(|e| tauri::Error::from(e))?;
+    Ok(entries.count())
+}
+
+#[tauri::command]
+pub fn get_cur_directory() -> Result<String> {
+    let path = std::env::current_dir().map_err(|e| tauri::Error::from(e))?;
+    Ok(path.to_string_lossy().to_string()) 
+}
