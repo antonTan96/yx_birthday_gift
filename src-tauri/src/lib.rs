@@ -15,7 +15,8 @@ pub fn run() {
             commands::get_num_files,
             commands::get_cur_directory,
             commands::encrypt_file,
-            commands::decrypt_file])
+            commands::decrypt_file,
+            commands::get_data_file_path])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

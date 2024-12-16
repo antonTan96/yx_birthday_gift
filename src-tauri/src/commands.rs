@@ -90,7 +90,17 @@ pub fn decrypt_file() {
     };
 
     // Write the decrypted text to a file
-    let decrypted_file = PathBuf::from("./data/extras/decrypted_file.txt");
+    let data_directory = std::env::var("DATA_DIR").unwrap();
+    let data_directory = PathBuf::from(data_directory);
+    let decrypted_file = data_directory.join("decrypted.txt");
     fs::write(decrypted_file, decrypted).unwrap();
     println!("Decrypted file written successfully!");
+}
+
+#[tauri::command]
+pub fn get_data_file_path(path: String) -> Result<String> {
+    let data_directory = std::env::var("DATA_DIR").unwrap();
+    let data_directory = PathBuf::from(data_directory);
+    let file_path = data_directory.join(path);
+    Ok(file_path.to_string_lossy().to_string())
 }
