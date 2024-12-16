@@ -1,7 +1,7 @@
 import { invoke } from "@tauri-apps/api/core";
 import { useState, useEffect } from "react";
 import { ArrowBackRounded } from "@mui/icons-material";
-import { Stack, Card, Box, Button, Modal, Pagination} from "@mui/material";
+import { Stack, Card, Box, Button, Modal, Pagination, Typography} from "@mui/material";
 
 
 function SecretTextModal(props) {
@@ -124,7 +124,11 @@ function Messages() {
         backgroundColor: "transparent",
         border: "1px solid black",
         scrollbarWidth: "thin",
-      }}> {text.map((line, index) => <p key={index}>{line}</p>)}
+      }}> {text.map((line, index) => index == 0 ?
+         <Typography sx={{textDecoration:'underline', textDecorationSkipInk:'none'}} variant="h6">{line}</Typography> :
+         <Typography sx={{pt:"20px"}}>{line}</Typography>
+         
+         )}
       </Card>
       <Stack alignItems="center" style={{
         position: "fixed",
