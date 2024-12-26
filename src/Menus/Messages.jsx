@@ -10,7 +10,6 @@ function SecretTextModal(props) {
     const [counter, setCounter] = useState(0);
     const [errorText, setErrorText] = useState("");
     const checkPassword = (password) => {
-      console.log("Password entered:", password);
       if(password === import.meta.env.VITE_SECRET_PASSWORD) {
         //do decryption
         invoke("decrypt_file").then((response) => {
@@ -48,22 +47,24 @@ function SecretTextModal(props) {
     <Modal
       open={props.open}
       onClose={() => props.setOpen(false)}>
-      <Box style={{
+      <Card style={{
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
         position: "absolute",
         textAlign: "center",
         width: "60vw",
+        height: "60vh",
         backgroundColor: "#F9D87D",
         border: "2px solid #000000",
+        overflow: 'auto',
         borderRadius: "10px",
         padding: "20px",
       }}>
         {props.decrypted ? 
-        <div>{props.content.map((line, index) => <p key={index}>{line}</p>)}</div> : 
+        <div>{props.content.map((line, index) => <Typography sx={{pt:"20px"}}>{line}</Typography>)}</div> : 
         <PasswordForm setDecrypted={props.setDecrypted} setSecretText={props.setSecretText} />}
-      </Box>
+      </Card>
     </Modal>
   )
 }
@@ -92,14 +93,10 @@ function Messages() {
     setText(response.split("\n"));
   }
 
-  async function get_directory() {
-    const response = await invoke("get_cur_directory");
-    console.log(response);
-  }
+  
 
   useEffect(() => {
     get_num_files();
-    get_directory();
   }, []);
 
   useEffect(() => {
