@@ -9,6 +9,7 @@ use aes_gcm::{
 };
 use serde_json::Value;
 use chrono::prelude::*;
+
 #[tauri::command]
 pub fn read_file(file_path: String) -> Result<String> {
     let path = PathBuf::from(file_path);
@@ -111,38 +112,32 @@ pub fn save_thought(content: String)  {
         fs::create_dir(thought_directory.clone()).unwrap();
     } 
     let num_files: isize = get_num_files(thought_directory.clone().to_string_lossy().to_string()).unwrap().try_into().unwrap();
-    let mut file_path = thought_directory.join(format!("{}.json", cmp::max(num_files , 1)));
+    let mut file_path = thought_directory.join(format!("{}.json", num_files + 1));
 
-    if(!file_path.exists()) {
-        fs::write(file_path.clone(), "[]").unwrap();
-    }
-
-    let records = fs::read_to_string(file_path.clone()).expect("Unable to read file");
-
-    let mut records: Value = serde_json::from_str(&records).unwrap();
-
-    if records.as_array().unwrap().len() >= 100 {
-        file_path = thought_directory.join(format!("{}.json", num_files + 1));
-        fs::write(file_path.clone(), "[]").unwrap();
-        records = serde_json::from_str("[]").unwrap();
-    }
-
-    //records is an array of json objects
-    records.as_array_mut().unwrap().push(serde_json::json!({
-        "content": content,
-        "time": chrono::Local::now().to_string()
-    }));
     
-    fs::write(file_path, serde_json::to_string_pretty(&records).unwrap()).unwrap();
+    fs::write(file_path.clone(), "[]").unwrap();
+    let dt = chrono::Local::now();
+    
+    let content : Value = serde_json::json!({
+        "id": num_files + 1,
+        "content": content,
+        "time": dt.format("%Y-%m-%d %H:%M:%S").to_string()
+    });
+    
+    fs::write(file_path, serde_json::to_string_pretty(&content).unwrap()).unwrap();
 }
 
 #[tauri::command]
-pub fn get_thoughts(file_path: String) -> Result<Vec<Value>> {
+pub fn get_thoughts() -> Result<Vec<Value>> {
     let thought_directory = PathBuf::from(get_data_file_path("thoughts".to_string()).unwrap());
-    let file_path = thought_directory.join(file_path);
-    let content : Value = serde_json::from_str(&read_file(file_path.to_string_lossy().to_string()).unwrap()).unwrap();
-
-
-    Ok(content.as_array().unwrap().to_vec())
-
+    let mut thoughts: Vec<Value> = Vec::new();
+    //read all files
+    for entry in fs::read_dir(thought_directory).unwrap() {
+        let entry = entry.unwrap();
+        let path = entry.path();
+        let content = fs::read_to_string(path).unwrap();
+        let thought: Value = serde_json::from_str(&content).unwrap();
+        thoughts.push(thought);
+    }
+    Ok(thoughts)
 }
