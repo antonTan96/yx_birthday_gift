@@ -13,10 +13,11 @@ pub fn run() {
             greet,
             commands::read_file,
             commands::get_num_files,
-            commands::get_cur_directory,
             commands::encrypt_file,
             commands::decrypt_file,
-            commands::get_data_file_path])
+            commands::get_data_file_path,
+            commands::save_thought,
+            commands::get_thoughts,])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
 }

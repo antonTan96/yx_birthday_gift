@@ -18,7 +18,7 @@ fn main() {
     if !Path::new(&data_directory).exists() {
         std::fs::create_dir_all(&data_directory).unwrap();
     }
-    let config_path = data_directory.join("config.json");
+    let config_path = data_directory.join("data.json");
     if !config_path.exists() {
         let mut file = File::create(config_path).unwrap();
         let json_data = r#"

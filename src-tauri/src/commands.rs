@@ -1,4 +1,5 @@
 use std::fs;
+use std::cmp;
 use std::path::PathBuf;
 use tauri::ipc::Response;
 use tauri::Result;
@@ -6,6 +7,8 @@ use aes_gcm::{
     aead::{Aead, AeadCore, KeyInit, OsRng},
     Aes256Gcm, Nonce, Key // Or `Aes128Gcm`
 };
+use serde_json::Value;
+use chrono::prelude::*;
 #[tauri::command]
 pub fn read_file(file_path: String) -> Result<String> {
     let path = PathBuf::from(file_path);
@@ -26,9 +29,11 @@ pub fn get_num_files(dir: String) -> Result<usize> {
 }
 
 #[tauri::command]
-pub fn get_cur_directory() -> Result<String> {
-    let path = std::env::current_dir().map_err(|e| tauri::Error::from(e))?;
-    Ok(path.to_string_lossy().to_string()) 
+pub fn get_data_file_path(path: String) -> Result<String> {
+    let data_directory = std::env::var("DATA_DIR").unwrap();
+    let data_directory = PathBuf::from(data_directory);
+    let file_path = data_directory.join(path);
+    Ok(file_path.to_string_lossy().to_string())
 }
 
 #[tauri::command]
@@ -97,10 +102,47 @@ pub fn decrypt_file() {
     println!("Decrypted file written successfully!");
 }
 
+
 #[tauri::command]
-pub fn get_data_file_path(path: String) -> Result<String> {
-    let data_directory = std::env::var("DATA_DIR").unwrap();
-    let data_directory = PathBuf::from(data_directory);
-    let file_path = data_directory.join(path);
-    Ok(file_path.to_string_lossy().to_string())
+pub fn save_thought(content: String)  {
+    
+    let thought_directory = PathBuf::from(get_data_file_path("thoughts".to_string()).unwrap());
+    if(!thought_directory.exists()) {
+        fs::create_dir(thought_directory.clone()).unwrap();
+    } 
+    let num_files: isize = get_num_files(thought_directory.clone().to_string_lossy().to_string()).unwrap().try_into().unwrap();
+    let mut file_path = thought_directory.join(format!("{}.json", cmp::max(num_files , 1)));
+
+    if(!file_path.exists()) {
+        fs::write(file_path.clone(), "[]").unwrap();
+    }
+
+    let records = fs::read_to_string(file_path.clone()).expect("Unable to read file");
+
+    let mut records: Value = serde_json::from_str(&records).unwrap();
+
+    if records.as_array().unwrap().len() >= 100 {
+        file_path = thought_directory.join(format!("{}.json", num_files + 1));
+        fs::write(file_path.clone(), "[]").unwrap();
+        records = serde_json::from_str("[]").unwrap();
+    }
+
+    //records is an array of json objects
+    records.as_array_mut().unwrap().push(serde_json::json!({
+        "content": content,
+        "time": chrono::Local::now().to_string()
+    }));
+    
+    fs::write(file_path, serde_json::to_string_pretty(&records).unwrap()).unwrap();
+}
+
+#[tauri::command]
+pub fn get_thoughts(file_path: String) -> Result<Vec<Value>> {
+    let thought_directory = PathBuf::from(get_data_file_path("thoughts".to_string()).unwrap());
+    let file_path = thought_directory.join(file_path);
+    let content : Value = serde_json::from_str(&read_file(file_path.to_string_lossy().to_string()).unwrap()).unwrap();
+
+
+    Ok(content.as_array().unwrap().to_vec())
+
 }
