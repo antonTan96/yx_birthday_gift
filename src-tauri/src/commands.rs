@@ -112,7 +112,7 @@ pub fn save_thought(content: String)  {
         fs::create_dir(thought_directory.clone()).unwrap();
     } 
     let num_files: isize = get_num_files(thought_directory.clone().to_string_lossy().to_string()).unwrap().try_into().unwrap();
-    let mut file_path = thought_directory.join(format!("{}.json", num_files + 1));
+    let mut file_path = thought_directory.join(format!("{}.json", num_files));
 
     
     fs::write(file_path.clone(), "[]").unwrap();
@@ -125,17 +125,22 @@ pub fn save_thought(content: String)  {
     });
     
     fs::write(file_path, serde_json::to_string_pretty(&content).unwrap()).unwrap();
+
+    
 }
 
 #[tauri::command]
-pub fn get_thoughts() -> Result<Vec<Value>> {
+pub fn get_thoughts(start:usize, end:usize) -> Result<Vec<Value>> {
     let thought_directory = PathBuf::from(get_data_file_path("thoughts".to_string()).unwrap());
     let mut thoughts: Vec<Value> = Vec::new();
-    //read all files
-    for entry in fs::read_dir(thought_directory).unwrap() {
-        let entry = entry.unwrap();
-        let path = entry.path();
-        let content = fs::read_to_string(path).unwrap();
+    
+    for number in start..end {
+        let file_name = format!("{}.json", number);
+        let path = thought_directory.join(file_name);
+        let content = match fs::read_to_string(path){
+            Ok(content) => content,
+            Err(_) => break
+        };
         let thought: Value = serde_json::from_str(&content).unwrap();
         thoughts.push(thought);
     }
