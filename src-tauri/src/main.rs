@@ -18,19 +18,7 @@ fn main() {
     if !Path::new(&data_directory).exists() {
         std::fs::create_dir_all(&data_directory).unwrap();
     }
-    let config_path = data_directory.join("data.json");
-    if !config_path.exists() {
-        let mut file = File::create(config_path).unwrap();
-        let json_data = r#"
-        {
-            "decrypted": "false"
-        }
-        "#;
-        let value: Value = serde_json::from_str(json_data).unwrap();
-        let pretty_json = serde_json::to_string_pretty(&value).unwrap();
-        println!("{}", pretty_json);
-        file.write_all(pretty_json.as_bytes()).unwrap();
-    } 
+     
     env::set_var("DATA_DIR", data_directory);
     birthday_project_lib::run()
 }
