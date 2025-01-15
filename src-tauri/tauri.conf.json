@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "testApp",
+  "productName": "Your Gift",
   "version": "0.1.0",
   "identifier": "com.testApp.app",
   "build": {
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "i_will_forget_about_this_idk",
+        "title": "Your Gift",
         "maximized": true
       }
     ],

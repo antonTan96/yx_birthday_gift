@@ -4,14 +4,19 @@ import kitty from "./../assets/cat 1.png"
 import drugs from "./../assets/drugs.png"
 import gift from "./../assets/Gift box.svg"
 import { Button, Typography } from "@mui/material";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Box } from "@mui/material";
 
 import "./../fonts/MadimiOne-Regular.ttf";
+import { invoke } from "@tauri-apps/api/core";
 
 function App() {
   let navigate = useNavigate()
   const [open, setOpen] = useState(false);
+
+  // useEffect(() => {
+  //   invoke("encrypt_file");
+  // },[])
 
   return (
     <>

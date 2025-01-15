@@ -36,7 +36,21 @@ function SavedThoughts() {
         startIcon={<ArrowBackRounded />}>
       </Button>
       <TableContainer component={Paper}>
+      <Table sx={{ tableLayout: "fixed", backgroundColor: "rgba(255,255,255,0.1)" }}>
+      
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[]}
+                count={total}
+                rowsPerPage={10}
+                page={page}
+                onPageChange={(event, number) => {setPage(number)}}
+              />
+            </TableRow>
+          
+      </Table>
         <Table sx={{ tableLayout: "fixed", backgroundColor: "rgba(255,255,255,0.1)" }}>
+        
           <TableHead>
             <TableRow>
               <TableCell sx={{ width: "20%" }}>Time</TableCell>
@@ -62,8 +76,6 @@ function SavedThoughts() {
                 </TableCell>
               </TableRow>
             ))}
-          </TableBody>
-          <TableFooter>
             <TableRow>
               <TablePagination
                 rowsPerPageOptions={[]}
@@ -73,7 +85,8 @@ function SavedThoughts() {
                 onPageChange={(event, number) => {setPage(number)}}
               />
             </TableRow>
-          </TableFooter>
+          </TableBody>
+          
         </Table>
       </TableContainer>
     </div>

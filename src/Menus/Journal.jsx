@@ -11,10 +11,12 @@ function Journal() {
 
   function printText() {
     console.log(textRef.current.value); 
+    if(textRef.current.value.trim() != "") {
     invoke("save_thought", {content: textRef.current.value}).then((res) => {
       textRef.current.value = "";
     }
     );
+  }
   }
 
   return (
