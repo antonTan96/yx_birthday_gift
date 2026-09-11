@@ -1,7 +1,23 @@
-# Tauri + React
+# Nameless Gift
 
-This template should help get you started developing with Tauri and React in Vite.
+Send a letter to someone you care about today.
 
-## Recommended IDE Setup
+# Prerequisites
+* Set up [Tauri 2.0](https://v2.tauri.app/start/prerequisites/) on your machine.
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+# Quick Start
+
+To start development run the following:
+```bash
+npm run tauri dev
+```
+
+To package the executable run the following:
+```bash
+npm run tauri build
+```
+
+# Next Steps
+* Data modelling
+* implement AI
+* uh blockchain as currency?
